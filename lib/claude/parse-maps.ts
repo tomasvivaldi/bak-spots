@@ -1,0 +1,71 @@
+import Anthropic from '@anthropic-ai/sdk'
+import type { ParsedMapsSpot } from '@/types/spot'
+
+function extractPlaceName(url: string): string {
+  const match = url.match(/maps\/place\/([^/@?]+)/)
+  if (match) return decodeURIComponent(match[1].replace(/\+/g, ' '))
+  throw new Error('Cannot extract place name from URL. Use a Google Maps place URL (maps.google.com/maps/place/...)')
+}
+
+export async function parseMapsUrl(mapsUrl: string): Promise<ParsedMapsSpot> {
+  const placeName = extractPlaceName(mapsUrl)
+  const apiKey = process.env.GOOGLE_PLACES_API_KEY!
+
+  // Text search to get place_id
+  const searchRes = await fetch(
+    `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(placeName + ' Bangkok')}&key=${apiKey}`
+  )
+  const searchData = await searchRes.json()
+
+  if (searchData.status !== 'OK' || !searchData.results.length) {
+    throw new Error(`Place not found: ${placeName}`)
+  }
+
+  const placeId = searchData.results[0].place_id
+
+  // Get place details
+  const detailsRes = await fetch(
+    `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,types,rating,url,price_level&key=${apiKey}`
+  )
+  const detailsData = await detailsRes.json()
+  const place = detailsData.result
+
+  // Claude formats into spot schema
+  const client = new Anthropic()
+  const message = await client.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 500,
+    messages: [{
+      role: 'user',
+      content: `Given this Bangkok place, return a JSON object with:
+- category: one of "date", "nightlife", "day", "meet"
+- subcategory: e.g. "bar", "cafe", "park", "club", "restaurant", "mall"
+- area: Bangkok neighborhood (e.g. "Sukhumvit", "Silom", "Thonglor", "Ekkamai")
+- description: 1-2 sentence description for a dating context
+- vibe: array of 1-4 tags e.g. ["rooftop", "chill", "romantic", "loud", "outdoor"]
+- price_range: integer 1-4 (1=cheap, 4=expensive)
+
+Place: ${place.name}
+Address: ${place.formatted_address}
+Types: ${place.types.join(', ')}
+Google rating: ${place.rating ?? 'unknown'}
+Price level: ${place.price_level ?? 'unknown'}
+
+Return only valid JSON, no markdown.`,
+    }],
+  })
+
+  const raw = (message.content[0] as { type: 'text'; text: string }).text
+  const json = JSON.parse(raw)
+
+  return {
+    name: place.name,
+    area: json.area ?? null,
+    subcategory: json.subcategory ?? null,
+    description: json.description ?? '',
+    vibe: Array.isArray(json.vibe) ? json.vibe : [],
+    price_range: typeof json.price_range === 'number' ? json.price_range : null,
+    google_maps_url: mapsUrl,
+    category: json.category,
+  }
+}
