@@ -28,6 +28,9 @@ export async function parseMapsUrl(mapsUrl: string): Promise<ParsedMapsSpot> {
     `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,types,rating,url,price_level&key=${apiKey}`
   )
   const detailsData = await detailsRes.json()
+  if (!detailsRes.ok || !detailsData.result) {
+    throw new Error(`Failed to fetch place details for ${placeId}`)
+  }
   const place = detailsData.result
 
   // Claude formats into spot schema

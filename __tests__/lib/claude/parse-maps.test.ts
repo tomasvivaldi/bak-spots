@@ -23,6 +23,7 @@ vi.mock('@anthropic-ai/sdk', () => {
 })
 
 global.fetch = vi.fn().mockResolvedValue({
+  ok: true,
   json: vi.fn().mockResolvedValue({
     status: 'OK',
     results: [{ place_id: 'ChIJ_test123' }],

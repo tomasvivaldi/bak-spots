@@ -20,10 +20,10 @@ const labelCls = 'block text-sm font-medium text-foreground mb-1'
 
 function MapsImportSection() {
   const [parseState, parseAction] = useActionState(importFromMapsUrl, null)
-  const [saveState, saveAction] = useActionState(saveImportedSpot, null)
+  const [saveState, saveAction] = useActionState(saveImportedSpot, { error: 'pending' })
   const result = parseState?.result
 
-  if (saveState === null && result) {
+  if (saveState?.error === '' && result) {
     return <p className="text-green-600 text-sm mt-4">Spot saved!</p>
   }
 
@@ -80,11 +80,11 @@ function MapsImportSection() {
 
 function ChatImportSection() {
   const [parseState, parseAction] = useActionState(importFromChatLog, null)
-  const [saveState, saveAction] = useActionState(saveChatImportedSpots, null)
+  const [saveState, saveAction] = useActionState(saveChatImportedSpots, { error: 'pending' })
   const [selected, setSelected] = useState<Set<number>>(new Set())
   const results = parseState?.results ?? []
 
-  if (saveState === null && results.length > 0) {
+  if (saveState?.error === '' && results.length > 0) {
     return <p className="text-green-600 text-sm mt-4">Spots saved!</p>
   }
 

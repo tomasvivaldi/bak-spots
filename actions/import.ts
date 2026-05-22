@@ -2,6 +2,7 @@
 import { parseMapsUrl } from '@/lib/claude/parse-maps'
 import { parseChatLog } from '@/lib/claude/parse-chat'
 import { createSpot } from './spots'
+import { isAuthenticated } from '@/lib/auth/session'
 import type { ParsedMapsSpot, ExtractedChatSpot, SpotInsert } from '@/types/spot'
 
 export async function importFromMapsUrl(
@@ -9,6 +10,7 @@ export async function importFromMapsUrl(
   formData: FormData
 ): Promise<{ error: string; result?: ParsedMapsSpot } | null> {
   try {
+    if (!isAuthenticated()) throw new Error('Unauthorized')
     const url = formData.get('maps_url') as string
     const result = await parseMapsUrl(url)
     return { error: '', result }
@@ -20,8 +22,9 @@ export async function importFromMapsUrl(
 export async function saveImportedSpot(
   _prev: { error: string } | null,
   formData: FormData
-): Promise<{ error: string } | null> {
+): Promise<{ error: string }> {
   try {
+    if (!isAuthenticated()) throw new Error('Unauthorized')
     const vibe = (formData.get('vibe') as string)
       .split(',').map((v) => v.trim()).filter(Boolean)
 
@@ -42,7 +45,7 @@ export async function saveImportedSpot(
       status: 'unvisited',
     }
     await createSpot(data)
-    return null
+    return { error: '' }
   } catch (e) {
     return { error: (e as Error).message }
   }
@@ -53,6 +56,7 @@ export async function importFromChatLog(
   formData: FormData
 ): Promise<{ error: string; results?: ExtractedChatSpot[] } | null> {
   try {
+    if (!isAuthenticated()) throw new Error('Unauthorized')
     const text = formData.get('chat_text') as string
     const results = await parseChatLog(text)
     return { error: '', results }
@@ -64,8 +68,9 @@ export async function importFromChatLog(
 export async function saveChatImportedSpots(
   _prev: { error: string } | null,
   formData: FormData
-): Promise<{ error: string } | null> {
+): Promise<{ error: string }> {
   try {
+    if (!isAuthenticated()) throw new Error('Unauthorized')
     const spotsJson = formData.get('spots') as string
     const spots: ExtractedChatSpot[] = JSON.parse(spotsJson)
 
@@ -88,7 +93,7 @@ export async function saveChatImportedSpots(
       }
       await createSpot(data)
     }
-    return null
+    return { error: '' }
   } catch (e) {
     return { error: (e as Error).message }
   }
