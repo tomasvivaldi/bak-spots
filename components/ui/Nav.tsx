@@ -9,17 +9,20 @@ const links = [
 
 export default function Nav() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="text-foreground font-semibold tracking-tight">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-foreground">
+      <div className="max-w-5xl mx-auto px-6 h-[52px] flex items-center justify-between">
+        <Link
+          href="/"
+          className="text-[11px] tracking-[0.22em] uppercase font-medium font-sans text-foreground"
+        >
           BKK
         </Link>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-9">
           {links.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className="text-sm text-muted hover:text-foreground transition-colors"
+              className="text-[10px] tracking-[0.18em] uppercase font-sans text-muted hover:text-foreground transition-colors"
             >
               {label}
             </Link>
