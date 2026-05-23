@@ -27,24 +27,31 @@ export default function CategoryPageClient({ spots, areas, vibes, title }: Props
 
   return (
     <PageTransition>
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        <h1 className="text-4xl font-bold text-foreground mb-2">{title}</h1>
-        <p className="text-muted mb-6">{spots.length} spots</p>
+      <div className="max-w-5xl mx-auto px-6 py-12">
+        <h1 className="font-serif text-5xl font-light text-foreground mb-2">{title}</h1>
+        <p className="text-[10px] tracking-[0.16em] uppercase font-sans text-muted mb-8">
+          {spots.length} spots
+        </p>
 
         <FilterBar areas={areas} vibes={vibes} onChange={setFilters} />
 
         {filtered.length === 0 ? (
-          <p className="text-muted mt-12 text-center">No spots match those filters.</p>
+          <p className="text-muted mt-12 text-center text-sm font-sans">
+            No spots match those filters.
+          </p>
         ) : (
-          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          <motion.div
+            layout
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-border border border-border mt-6"
+          >
             <AnimatePresence mode="popLayout">
               {filtered.map((spot) => (
                 <motion.div
                   key={spot.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   transition={{ duration: 0.15 }}
                 >
                   <SpotCard spot={spot} />
