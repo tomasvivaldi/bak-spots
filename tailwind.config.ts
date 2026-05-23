@@ -8,12 +8,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#F5F0E8',
-        surface: '#EDE8DC',
-        foreground: '#2C2416',
-        accent: '#8B6914',
-        muted: '#9E9082',
-        border: '#D4CEC4',
+        background: '#FAF8F5',
+        surface: '#F0EBE6',
+        foreground: '#0D0D0D',
+        accent: '#C9A99A',
+        muted: '#888884',
+        border: '#D8D0C8',
+      },
+      fontFamily: {
+        serif: ['var(--font-cormorant)', 'Georgia', 'serif'],
+        sans: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
       },
     },
   },
