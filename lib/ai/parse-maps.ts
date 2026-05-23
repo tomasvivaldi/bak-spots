@@ -31,7 +31,7 @@ export async function parseMapsUrl(mapsUrl: string): Promise<ParsedMapsSpot> {
   }
   const place = detailsData.result
 
-  const client = new OpenAI()
+  const client = new OpenAI({ apiKey: process.env.CODEX_API_KEY })
   const response = await client.chat.completions.create({
     model: 'gpt-4.5-mini',
     max_tokens: 500,

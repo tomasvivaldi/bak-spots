@@ -2,7 +2,7 @@ import OpenAI from 'openai'
 import type { ExtractedChatSpot } from '@/types/spot'
 
 export async function parseChatLog(chatText: string): Promise<ExtractedChatSpot[]> {
-  const client = new OpenAI()
+  const client = new OpenAI({ apiKey: process.env.CODEX_API_KEY })
   const response = await client.chat.completions.create({
     model: 'gpt-4.5-mini',
     max_tokens: 2000,
