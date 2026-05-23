@@ -12,7 +12,8 @@ export async function login(
     return { error: 'Wrong password' }
   }
 
-  cookies().set('bkk_admin_session', process.env.SESSION_SECRET!, {
+  const cookieStore = await cookies()
+  cookieStore.set('bkk_admin_session', process.env.SESSION_SECRET!, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
@@ -24,6 +25,7 @@ export async function login(
 }
 
 export async function logout() {
-  cookies().delete('bkk_admin_session')
+  const cookieStore = await cookies()
+  cookieStore.delete('bkk_admin_session')
   redirect('/admin/login')
 }

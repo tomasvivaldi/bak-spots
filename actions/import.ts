@@ -10,7 +10,7 @@ export async function importFromMapsUrl(
   formData: FormData
 ): Promise<{ error: string; result?: ParsedMapsSpot } | null> {
   try {
-    if (!isAuthenticated()) throw new Error('Unauthorized')
+    if (!await isAuthenticated()) throw new Error('Unauthorized')
     const url = formData.get('maps_url') as string
     const result = await parseMapsUrl(url)
     return { error: '', result }
@@ -24,7 +24,7 @@ export async function saveImportedSpot(
   formData: FormData
 ): Promise<{ error: string }> {
   try {
-    if (!isAuthenticated()) throw new Error('Unauthorized')
+    if (!await isAuthenticated()) throw new Error('Unauthorized')
     const vibe = (formData.get('vibe') as string)
       .split(',').map((v) => v.trim()).filter(Boolean)
 
@@ -56,7 +56,7 @@ export async function importFromChatLog(
   formData: FormData
 ): Promise<{ error: string; results?: ExtractedChatSpot[] } | null> {
   try {
-    if (!isAuthenticated()) throw new Error('Unauthorized')
+    if (!await isAuthenticated()) throw new Error('Unauthorized')
     const text = formData.get('chat_text') as string
     const results = await parseChatLog(text)
     return { error: '', results }
@@ -70,7 +70,7 @@ export async function saveChatImportedSpots(
   formData: FormData
 ): Promise<{ error: string }> {
   try {
-    if (!isAuthenticated()) throw new Error('Unauthorized')
+    if (!await isAuthenticated()) throw new Error('Unauthorized')
     const spotsJson = formData.get('spots') as string
     const spots: ExtractedChatSpot[] = JSON.parse(spotsJson)
 

@@ -5,10 +5,10 @@ import CategoryPageClient from '../dates/_client'
 export const revalidate = 60
 
 export default async function DayPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: spots } = await supabase
     .from('spots')
-    .select('id,name,category,subcategory,area,description,vibe,price_range,google_maps_url,source,status')
+    .select('*')
     .eq('category', 'day')
     .eq('status', 'active')
     .order('name')

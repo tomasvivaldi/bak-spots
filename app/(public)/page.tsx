@@ -15,7 +15,7 @@ const wordVariants = {
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.06, duration: 0.3, ease: 'easeOut' },
+    transition: { delay: i * 0.06, duration: 0.3, ease: 'easeOut' as const },
   }),
 }
 
@@ -58,7 +58,7 @@ export default function HomePage() {
               key={href}
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + i * 0.08, duration: 0.2, ease: 'easeOut' }}
+              transition={{ delay: 0.3 + i * 0.08, duration: 0.2, ease: 'easeOut' as const }}
             >
               <Link
                 href={href}

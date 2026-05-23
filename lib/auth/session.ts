@@ -1,8 +1,9 @@
 import { cookies } from 'next/headers'
 
-export function isAuthenticated(): boolean {
+export async function isAuthenticated(): Promise<boolean> {
   const secret = process.env.SESSION_SECRET
   if (!secret) return false
-  const session = cookies().get('bkk_admin_session')
+  const cookieStore = await cookies()
+  const session = cookieStore.get('bkk_admin_session')
   return session?.value === secret
 }

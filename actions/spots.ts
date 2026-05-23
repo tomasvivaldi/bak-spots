@@ -5,7 +5,7 @@ import { isAuthenticated } from '@/lib/auth/session'
 import type { SpotInsert, SpotUpdate, SpotStatus } from '@/types/spot'
 
 export async function createSpot(data: SpotInsert) {
-  if (!isAuthenticated()) throw new Error('Unauthorized')
+  if (!await isAuthenticated()) throw new Error('Unauthorized')
   const supabase = createServiceClient()
   const { error } = await supabase.from('spots').insert(data)
   if (error) throw new Error(error.message)
@@ -13,7 +13,7 @@ export async function createSpot(data: SpotInsert) {
 }
 
 export async function updateSpot(data: SpotUpdate) {
-  if (!isAuthenticated()) throw new Error('Unauthorized')
+  if (!await isAuthenticated()) throw new Error('Unauthorized')
   const supabase = createServiceClient()
   const { id, ...rest } = data
   const { error } = await supabase.from('spots').update(rest).eq('id', id)
@@ -22,7 +22,7 @@ export async function updateSpot(data: SpotUpdate) {
 }
 
 export async function deleteSpot(id: string) {
-  if (!isAuthenticated()) throw new Error('Unauthorized')
+  if (!await isAuthenticated()) throw new Error('Unauthorized')
   const supabase = createServiceClient()
   const { error } = await supabase.from('spots').delete().eq('id', id)
   if (error) throw new Error(error.message)
@@ -30,7 +30,7 @@ export async function deleteSpot(id: string) {
 }
 
 export async function updateSpotStatus(id: string, status: SpotStatus) {
-  if (!isAuthenticated()) throw new Error('Unauthorized')
+  if (!await isAuthenticated()) throw new Error('Unauthorized')
   const supabase = createServiceClient()
   const { error } = await supabase.from('spots').update({ status }).eq('id', id)
   if (error) throw new Error(error.message)
