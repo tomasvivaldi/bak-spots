@@ -31,9 +31,12 @@ export async function parseMapsUrl(mapsUrl: string): Promise<ParsedMapsSpot> {
   }
   const place = detailsData.result
 
-  const client = new OpenAI({ apiKey: process.env.CODEX_API_KEY })
+  const client = new OpenAI({
+    apiKey: process.env.NVIDIA_API_KEY,
+    baseURL: 'https://integrate.api.nvidia.com/v1',
+  })
   const response = await client.chat.completions.create({
-    model: 'gpt-4.5-mini',
+    model: 'meta/llama-3.3-70b-instruct',
     max_tokens: 500,
     messages: [{
       role: 'user',

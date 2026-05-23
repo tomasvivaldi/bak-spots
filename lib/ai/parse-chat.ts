@@ -2,9 +2,12 @@ import OpenAI from 'openai'
 import type { ExtractedChatSpot } from '@/types/spot'
 
 export async function parseChatLog(chatText: string): Promise<ExtractedChatSpot[]> {
-  const client = new OpenAI({ apiKey: process.env.CODEX_API_KEY })
+  const client = new OpenAI({
+    apiKey: process.env.NVIDIA_API_KEY,
+    baseURL: 'https://integrate.api.nvidia.com/v1',
+  })
   const response = await client.chat.completions.create({
-    model: 'gpt-4.5-mini',
+    model: 'meta/llama-3.3-70b-instruct',
     max_tokens: 2000,
     messages: [{
       role: 'user',
