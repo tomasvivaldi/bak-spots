@@ -65,7 +65,8 @@ export default function HomePage() {
           Your city, curated
         </motion.p>
         <motion.div
-          initial={{ scaleX: 0, originX: 0 }}
+          style={{ originX: 0 }}
+          initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ delay: 0.2, duration: 0.5, ease: 'easeOut' as const }}
           className="border-t border-foreground mt-5 mb-8"
@@ -84,9 +85,11 @@ export default function HomePage() {
               <motion.div
                 key={cat.href}
                 variants={itemVariants}
+                animate={{ opacity: active !== i ? 0.3 : 1 }}
+                transition={{ opacity: { duration: 0.2 } }}
                 className="flex items-center justify-between py-5 border-b border-border first:border-t first:border-border cursor-pointer"
-                style={{ opacity: active !== i ? 0.3 : 1, transition: 'opacity 0.2s' }}
                 onHoverStart={() => setActive(i)}
+                onTap={() => setActive(i)}
               >
                 <div>
                   <Link
@@ -94,7 +97,6 @@ export default function HomePage() {
                     className={`font-serif text-2xl font-light text-foreground hover:no-underline ${
                       active === i ? 'border-b border-accent pb-px' : ''
                     }`}
-                    tabIndex={-1}
                   >
                     {cat.label}
                   </Link>
@@ -103,6 +105,7 @@ export default function HomePage() {
                   </p>
                 </div>
                 <motion.span
+                  aria-hidden="true"
                   animate={{
                     x: active === i ? 4 : 0,
                     color: active === i ? '#C9A99A' : '#D8D0C8',
