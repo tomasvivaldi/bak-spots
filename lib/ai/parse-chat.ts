@@ -1,10 +1,10 @@
-import Anthropic from '@anthropic-ai/sdk'
+import OpenAI from 'openai'
 import type { ExtractedChatSpot } from '@/types/spot'
 
 export async function parseChatLog(chatText: string): Promise<ExtractedChatSpot[]> {
-  const client = new Anthropic()
-  const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+  const client = new OpenAI()
+  const response = await client.chat.completions.create({
+    model: 'gpt-4.5-mini',
     max_tokens: 2000,
     messages: [{
       role: 'user',
@@ -26,7 +26,7 @@ ${chatText}`,
     }],
   })
 
-  const raw = (message.content[0] as { type: 'text'; text: string }).text.trim()
+  const raw = (response.choices[0].message.content ?? '').trim()
   try {
     const spots: ExtractedChatSpot[] = JSON.parse(raw)
     return Array.isArray(spots) ? spots : []

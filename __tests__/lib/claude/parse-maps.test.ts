@@ -1,22 +1,25 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@anthropic-ai/sdk', () => {
+vi.mock('openai', () => {
   return {
     default: class {
-      messages = {
-        create: () => Promise.resolve({
-          content: [{
-            type: 'text',
-            text: JSON.stringify({
-              category: 'date',
-              subcategory: 'bar',
-              area: 'Silom',
-              description: 'Intimate cocktail bar perfect for dates.',
-              vibe: ['romantic', 'dim-lit', 'chill'],
-              price_range: 3,
-            }),
-          }],
-        }),
+      chat = {
+        completions: {
+          create: () => Promise.resolve({
+            choices: [{
+              message: {
+                content: JSON.stringify({
+                  category: 'date',
+                  subcategory: 'bar',
+                  area: 'Silom',
+                  description: 'Intimate cocktail bar perfect for dates.',
+                  vibe: ['romantic', 'dim-lit', 'chill'],
+                  price_range: 3,
+                }),
+              },
+            }],
+          }),
+        },
       }
     },
   }
@@ -38,7 +41,7 @@ global.fetch = vi.fn().mockResolvedValue({
   }),
 })
 
-import { parseMapsUrl } from '@/lib/claude/parse-maps'
+import { parseMapsUrl } from '@/lib/ai/parse-maps'
 
 describe('parseMapsUrl', () => {
   it('extracts place name from Google Maps URL', async () => {

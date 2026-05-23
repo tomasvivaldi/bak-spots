@@ -1,38 +1,41 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@anthropic-ai/sdk', () => {
+vi.mock('openai', () => {
   return {
     default: class {
-      messages = {
-        create: () => Promise.resolve({
-          content: [{
-            type: 'text',
-            text: JSON.stringify([
-              {
-                name: 'Craft Bangkok',
-                area: 'Sukhumvit',
-                why: 'Great craft beer selection, chill vibe',
-                vibe: ['chill', 'casual'],
-                category: 'nightlife',
-                subcategory: 'bar',
+      chat = {
+        completions: {
+          create: () => Promise.resolve({
+            choices: [{
+              message: {
+                content: JSON.stringify([
+                  {
+                    name: 'Craft Bangkok',
+                    area: 'Sukhumvit',
+                    why: 'Great craft beer selection, chill vibe',
+                    vibe: ['chill', 'casual'],
+                    category: 'nightlife',
+                    subcategory: 'bar',
+                  },
+                  {
+                    name: 'Chatuchak Weekend Market',
+                    area: 'Chatuchak',
+                    why: 'Huge market, easy to meet people',
+                    vibe: ['outdoor', 'busy'],
+                    category: 'meet',
+                    subcategory: 'market',
+                  },
+                ]),
               },
-              {
-                name: 'Chatuchak Weekend Market',
-                area: 'Chatuchak',
-                why: 'Huge market, easy to meet people',
-                vibe: ['outdoor', 'busy'],
-                category: 'meet',
-                subcategory: 'market',
-              },
-            ]),
-          }],
-        }),
+            }],
+          }),
+        },
       }
     },
   }
 })
 
-import { parseChatLog } from '@/lib/claude/parse-chat'
+import { parseChatLog } from '@/lib/ai/parse-chat'
 
 describe('parseChatLog', () => {
   it('extracts multiple spots from chat text', async () => {

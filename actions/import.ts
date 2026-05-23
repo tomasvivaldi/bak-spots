@@ -1,6 +1,6 @@
 'use server'
-import { parseMapsUrl } from '@/lib/claude/parse-maps'
-import { parseChatLog } from '@/lib/claude/parse-chat'
+import { parseMapsUrl } from '@/lib/ai/parse-maps'
+import { parseChatLog } from '@/lib/ai/parse-chat'
 import { createSpot } from './spots'
 import { isAuthenticated } from '@/lib/auth/session'
 import type { ParsedMapsSpot, ExtractedChatSpot, SpotInsert } from '@/types/spot'

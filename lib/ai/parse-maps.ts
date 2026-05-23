@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
+import OpenAI from 'openai'
 import type { ParsedMapsSpot } from '@/types/spot'
 
 function extractPlaceName(url: string): string {
@@ -11,7 +11,6 @@ export async function parseMapsUrl(mapsUrl: string): Promise<ParsedMapsSpot> {
   const placeName = extractPlaceName(mapsUrl)
   const apiKey = process.env.GOOGLE_PLACES_API_KEY!
 
-  // Text search to get place_id
   const searchRes = await fetch(
     `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(placeName + ' Bangkok')}&key=${apiKey}`
   )
@@ -23,7 +22,6 @@ export async function parseMapsUrl(mapsUrl: string): Promise<ParsedMapsSpot> {
 
   const placeId = searchData.results[0].place_id
 
-  // Get place details
   const detailsRes = await fetch(
     `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,types,rating,url,price_level&key=${apiKey}`
   )
@@ -33,10 +31,9 @@ export async function parseMapsUrl(mapsUrl: string): Promise<ParsedMapsSpot> {
   }
   const place = detailsData.result
 
-  // Claude formats into spot schema
-  const client = new Anthropic()
-  const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+  const client = new OpenAI()
+  const response = await client.chat.completions.create({
+    model: 'gpt-4.5-mini',
     max_tokens: 500,
     messages: [{
       role: 'user',
@@ -58,7 +55,7 @@ Return only valid JSON, no markdown.`,
     }],
   })
 
-  const raw = (message.content[0] as { type: 'text'; text: string }).text
+  const raw = response.choices[0].message.content ?? ''
   const json = JSON.parse(raw)
 
   return {
