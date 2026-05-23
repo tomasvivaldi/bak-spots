@@ -32,15 +32,15 @@ export default function FilterBar({ areas, vibes, onChange }: FilterBarProps) {
     onChange(next)
   }
 
+  const activeBtn = 'bg-foreground text-background border-foreground'
+  const inactiveBtn = 'border-border text-muted hover:border-foreground hover:text-foreground'
+  const btnBase = 'text-[9px] tracking-[0.16em] uppercase font-sans px-[14px] py-[5px] border transition-colors'
+
   return (
     <div className="flex flex-wrap gap-2 py-4">
       <button
         onClick={() => setArea(null)}
-        className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
-          filters.area === null
-            ? 'bg-accent text-white border-accent'
-            : 'border-border text-muted hover:border-accent hover:text-foreground'
-        }`}
+        className={`${btnBase} ${filters.area === null ? activeBtn : inactiveBtn}`}
       >
         All Areas
       </button>
@@ -48,11 +48,7 @@ export default function FilterBar({ areas, vibes, onChange }: FilterBarProps) {
         <button
           key={area}
           onClick={() => setArea(area)}
-          className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
-            filters.area === area
-              ? 'bg-accent text-white border-accent'
-              : 'border-border text-muted hover:border-accent hover:text-foreground'
-          }`}
+          className={`${btnBase} ${filters.area === area ? activeBtn : inactiveBtn}`}
         >
           {area}
         </button>
@@ -64,11 +60,7 @@ export default function FilterBar({ areas, vibes, onChange }: FilterBarProps) {
             <button
               key={vibe}
               onClick={() => toggleVibe(vibe)}
-              className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
-                filters.vibe.includes(vibe)
-                  ? 'bg-foreground text-background border-foreground'
-                  : 'border-border text-muted hover:border-foreground hover:text-foreground'
-              }`}
+              className={`${btnBase} ${filters.vibe.includes(vibe) ? activeBtn : inactiveBtn}`}
             >
               {vibe}
             </button>
